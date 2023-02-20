@@ -1,11 +1,15 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from time import sleep
+from selenium.webdriver.common.keys import Keys
 
-def request():
-    print("request")
-    email = input('userName or email: ')
-    passwd = input('password: ')
+def request(search):
+    # print("request")
+    # print(search)
+    # email = input('userName or email: ')
+    # passwd = input('password: ')
+    email = 'mickyrajkumar@gmail.com'
+    passwd = "R@jkum@r4798"
     options = webdriver.ChromeOptions()
     # options.headless = True
     options.add_argument("--window-size=1920x1080")
@@ -21,6 +25,16 @@ def request():
     password.send_keys(passwd)
     signIn = driver.find_element(By.CLASS_NAME,'sign-in-form__submit-button')
     signIn.click()
-    driver.implicitly_wait(15)
-    network = driver.find_element(By.LINK_TEXT, 'My Network')
-    network.click()
+    driver.implicitly_wait(10)
+    # network = driver.find_element(By.LINK_TEXT, 'My Network')
+    # network.click()
+    searchPeople = driver.find_element(By.CLASS_NAME, 'search-global-typeahead__input')
+    searchPeople.send_keys(search)
+    searchPeople.send_keys(Keys.ENTER)
+    peopleButton = driver.find_elements(By.CLASS_NAME,'artdeco-pill')
+    # peopleButton = driver.find_element(By.LINK_TEXT, 'People')
+    # print("people",peopleButton[0])
+    peopleButton[0].click()
+
+
+    sleep(30)
