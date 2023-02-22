@@ -4,11 +4,12 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from time import sleep
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver import ActionChains
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 def request(search):   
     load_dotenv()
-    print(os.environ.get('EMAIL'))
-    print(os.environ.get('PASSWORD'))
     # email = input('userName or email: ')
     # passwd = input('password: ')
     email = os.environ.get('EMAIL')
@@ -22,6 +23,7 @@ def request(search):
 
     driver.get('https://www.linkedin.com/')
     driver.implicitly_wait(15)
+    wait = WebDriverWait(driver, 30)
 
     userName = driver.find_element(By.ID,'session_key')
     userName.send_keys(email)
@@ -35,16 +37,25 @@ def request(search):
     searchPeople = driver.find_element(By.CLASS_NAME, 'search-global-typeahead__input')
     searchPeople.send_keys(search)
     searchPeople.send_keys(Keys.ENTER)
-    peopleButton = driver.find_elements(By.CLASS_NAME,'artdeco-pill')
-    # peopleButton = driver.find_element(By.LINK_TEXT, 'People')
-    # print("people",peopleButton[0])
-    peopleButton[0].click()
-    html = driver.find_element(By.TAG_NAME, 'html')
-    html.send_keys(Keys.END)
-    driver.execute_script("window.scrollTo(0, window.scrollY + 200)")
-    nextPage = driver.find_elements(By.CLASS_NAME,'artdeco-pagination__indicator')
-    print('page: ---', nextPage )
-    # nextPage[1].click()
+
+    # peopleButton = driver.find_elements(By.CLASS_NAME,'artdeco-pill')
+    # # print("people",peopleButton[0])
+    # peopleButton[0].click()
+    # driver.implicitly_wait(10)
+    # wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "entity-result__item")))
+    # connectButton = driver.find_elements(By.XPATH("//button[contains(text()='Connect')]"))
+    # print(len(connectButton))
+    # print('-------------',connectButton)
+
+    footer = driver.find_element(By.TAG_NAME, "footer")
+    delta_y = int(footer.rect['y'])
+    ActionChains(driver)\
+        .scroll_by_amount(0, delta_y)\
+        .perform()
+    driver.implicitly_wait(5)
+    nextPage = driver.find_elements(By.CLASS_NAME,'artdeco-pagination__button--next')
+    print('page: ---', len(nextPage ))
+    nextPage[0].click()
 
 
     sleep(30)
